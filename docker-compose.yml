@@ -1,0 +1,34 @@
+version: "3.7"
+
+services:
+  nginx-proxy:
+    image: jwilder/nginx-proxy@sha256:4116f2b6fb9b2a41d94149e8261c81ebbfd96aa84882d87f19c45e00a7c3c221
+    container_name: nginx-proxy
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - certs:/etc/nginx/certs
+      - html:/usr/share/nginx/html
+      - vhost.d:/etc/nginx/vhost.d
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+    labels:
+      - "com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy"
+
+  nginx-proxy-letsencrypt:
+    image: jrcs/letsencrypt-nginx-proxy-companion@sha256:1e4c6fd611c9a2f2ce96c4dffaaff93ab1c91c046884738177277ac0d04692d0
+    container_name: nginx-proxy-letsencrypt
+    restart: always
+    environment:
+      DEFAULT_EMAIL: kevinkjt2000@gmail.com
+    volumes:
+      - certs:/etc/nginx/certs
+      - html:/usr/share/nginx/html
+      - vhost.d:/etc/nginx/vhost.d
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+
+volumes:
+  certs:
+  html:
+  vhost.d:
